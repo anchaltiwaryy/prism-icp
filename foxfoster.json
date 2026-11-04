@@ -4,17 +4,154 @@
   "model": "mixed",
   "asOf": "2026-11-04",
   "offers": [
-    {"name": "Xnolex", "problem": "assess externally exposed web, API and cloud systems", "beneficiary": "application security team",
-      "exclusions": ["No eligible assessment scope", "Existing testing fully meets requirements"],
+    {
+      "name": "Xnolex",
+      "problem": "assess externally exposed web, API and cloud systems",
+      "beneficiary": "application security team",
+      "exclusions": [
+        "No eligible assessment scope",
+        "Existing testing fully meets requirements"
+      ],
       "segments": [
-        {"segment": "SaaS teams operating business-critical APIs", "motion": "direct purchase", "user": "AppSec team", "buyer": "CTO or security leader"},
-        {"segment": "Product companies facing time-bound assessment requirements", "motion": "procurement", "user": "security engineering", "buyer": "budget owner to verify"},
-        {"segment": "Security service providers supporting multiple web estates", "motion": "channel", "user": "assessment practitioners", "buyer": "service delivery lead"}
-      ]},
-    {"name": "Practitioner-led services", "problem": "obtain expert security assessments on a defined scope"},
-    {"name": "Corporate Training", "problem": "close team cybersecurity skills gaps"},
-    {"name": "CTF Arena", "problem": "run hands-on cybersecurity challenges"},
-    {"name": "FoxFoster Labs", "problem": "practice cybersecurity in a lab environment"},
-    {"name": "Academy", "problem": "build cybersecurity skills through instruction"}
+        {
+          "segment": "SaaS teams operating business-critical APIs",
+          "motion": "direct purchase",
+          "user": "AppSec team",
+          "buyer": "CTO or security leader"
+        },
+        {
+          "segment": "Product companies facing time-bound assessment requirements",
+          "motion": "procurement",
+          "user": "security engineering",
+          "buyer": "budget owner to verify"
+        },
+        {
+          "segment": "Security service providers supporting multiple web estates",
+          "motion": "channel",
+          "user": "assessment practitioners",
+          "buyer": "service delivery lead"
+        }
+      ]
+    },
+    {
+      "name": "Practitioner-led services",
+      "problem": "obtain expert security assessments on a defined scope",
+      "segments": [
+        {
+          "segment": "SaaS teams preparing a customer security review",
+          "motion": "direct service purchase",
+          "user": "engineering and security teams",
+          "buyer": "CTO or security lead"
+        },
+        {
+          "segment": "Organizations with a scheduled compliance assessment",
+          "motion": "procurement",
+          "user": "security and compliance teams",
+          "buyer": "security budget owner"
+        },
+        {
+          "segment": "Agencies needing a specialist assessment partner",
+          "motion": "channel partner",
+          "user": "delivery team",
+          "buyer": "agency owner"
+        }
+      ]
+    },
+    {
+      "name": "Corporate Training",
+      "problem": "close team cybersecurity skills gaps",
+      "segments": [
+        {
+          "segment": "Security teams onboarding new practitioners",
+          "motion": "team training",
+          "user": "new security hires",
+          "buyer": "security team lead"
+        },
+        {
+          "segment": "Employers building role-specific security skills",
+          "motion": "employer training",
+          "user": "technical staff",
+          "buyer": "learning and development owner"
+        },
+        {
+          "segment": "Institutions seeking practitioner-led workshops",
+          "motion": "institution purchase",
+          "user": "students and faculty",
+          "buyer": "program director"
+        }
+      ]
+    },
+    {
+      "name": "CTF Arena",
+      "problem": "run hands-on cybersecurity challenges",
+      "segments": [
+        {
+          "segment": "Colleges hosting cybersecurity competitions",
+          "motion": "event purchase",
+          "user": "students",
+          "buyer": "faculty or event organizer"
+        },
+        {
+          "segment": "Employers running team security challenges",
+          "motion": "corporate event",
+          "user": "employees",
+          "buyer": "security training lead"
+        },
+        {
+          "segment": "Security communities hosting recurring CTFs",
+          "motion": "community partnership",
+          "user": "participants",
+          "buyer": "community organizer"
+        }
+      ]
+    },
+    {
+      "name": "FoxFoster Labs",
+      "problem": "practice cybersecurity in a lab environment",
+      "segments": [
+        {
+          "segment": "Individuals practicing hands-on cybersecurity",
+          "motion": "individual purchase",
+          "user": "learner",
+          "buyer": "individual learner"
+        },
+        {
+          "segment": "Training institutions adding practical exercises",
+          "motion": "institution purchase",
+          "user": "students",
+          "buyer": "training program owner"
+        },
+        {
+          "segment": "Employers providing security practice labs",
+          "motion": "employer sponsorship",
+          "user": "security staff",
+          "buyer": "security team lead"
+        }
+      ]
+    },
+    {
+      "name": "Academy",
+      "problem": "build cybersecurity skills through instruction",
+      "segments": [
+        {
+          "segment": "Students preparing for cybersecurity roles",
+          "motion": "individual purchase",
+          "user": "student",
+          "buyer": "student or family"
+        },
+        {
+          "segment": "Working IT professionals changing into security",
+          "motion": "individual purchase",
+          "user": "IT professional",
+          "buyer": "professional or employer"
+        },
+        {
+          "segment": "Institutions adding cybersecurity courses",
+          "motion": "institution purchase",
+          "user": "students",
+          "buyer": "academic program owner"
+        }
+      ]
+    }
   ]
 }
