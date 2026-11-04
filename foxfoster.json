@@ -1,0 +1,20 @@
+{
+  "name": "FoxFoster",
+  "website": "https://foxfoster.com/",
+  "model": "mixed",
+  "asOf": "2026-11-04",
+  "offers": [
+    {"name": "Xnolex", "problem": "assess externally exposed web, API and cloud systems", "beneficiary": "application security team",
+      "exclusions": ["No eligible assessment scope", "Existing testing fully meets requirements"],
+      "segments": [
+        {"segment": "SaaS teams operating business-critical APIs", "motion": "direct purchase", "user": "AppSec team", "buyer": "CTO or security leader"},
+        {"segment": "Product companies facing time-bound assessment requirements", "motion": "procurement", "user": "security engineering", "buyer": "budget owner to verify"},
+        {"segment": "Security service providers supporting multiple web estates", "motion": "channel", "user": "assessment practitioners", "buyer": "service delivery lead"}
+      ]},
+    {"name": "Practitioner-led services", "problem": "obtain expert security assessments on a defined scope"},
+    {"name": "Corporate Training", "problem": "close team cybersecurity skills gaps"},
+    {"name": "CTF Arena", "problem": "run hands-on cybersecurity challenges"},
+    {"name": "FoxFoster Labs", "problem": "practice cybersecurity in a lab environment"},
+    {"name": "Academy", "problem": "build cybersecurity skills through instruction"}
+  ]
+}
