@@ -2,3 +2,8 @@
 node_modules/
 .env
 *.local.json
+
+/data/
+/.next/
+
+.env.local

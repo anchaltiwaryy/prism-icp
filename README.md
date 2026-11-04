@@ -1,120 +1,58 @@
-# PRISM · Evidence-driven ICP discovery
+# PRISM
 
-PRISM turns a business brief into separate offer trees, falsifiable market hypotheses, an evidence ledger, and a ranked plan for field testing. This release is a local CLI for analyst-supplied snapshots and independent review records. It uses Node.js built-ins and makes zero network or model calls.
+A local Next.js dashboard for evidence led ICP research. Enter a business, offer and problem. PRISM maps buyer paths, gathers permitted source references, drafts hypotheses, runs a skeptical pass and checks citations before showing provisional choices. Every run preserves its activity, alternatives, gaps and rejections.
 
-## Quick start
+## Start
 
-Requires Node.js 22 or newer. There are no packages to install.
+Requires Node.js 22 or newer.
 
-```sh
-node --test
-node cli.js run foxfoster.json
+```bash
+npm install
+npm run dev
 ```
 
-Open the printed directory under `runs/`. The FoxFoster fixture encodes six offer tracks from the [PRD](Autonomous_ICP_Discovery_PRD_v1.md) as declared inputs. It produces 33 provisional hypotheses and zero recommendations. Add approved, reviewed evidence to evaluate specific hypotheses.
+Open http://localhost:3000. Choose **New research**, enter a brief, then choose whether the dashboard should show the top three or top five choices. The full portfolio remains available below the shortlist. Run data is written to `data/` and ignored by Git. No database server is required for local use.
 
-## Run your own brief
+For a production style local run, use `npm run build` and `npm start`. Run `npm test` for the decision engine regressions. `npm run demo` runs the original FoxFoster fixture through the deterministic CLI.
 
-Save a JSON file with a business name, model, fixed evaluation date, and one or more offers.
+## Research configuration
 
-```json
-{
-  "name": "Example Training",
-  "model": "b2c",
-  "asOf": "2026-11-04",
-  "geographies": ["India"],
-  "offers": [
-    {
-      "name": "Data Analysis Course",
-      "problem": "learn practical data analysis",
-      "beneficiary": "early-career analysts",
-      "exclusions": ["Learners who require an accredited qualification"]
-    }
-  ]
-}
+The dashboard works without keys. With no search or model configured, it maps market paths and records the evidence gaps. To enable source discovery and analysis, set these variables in a local `.env.local` file.
+
+```env
+SEARXNG_URL=http://localhost:8080
+OPENAI_API_KEY=your_key
+OPENAI_MODEL=gpt-4o-mini
+# Optional OpenAI compatible endpoint
+# OPENAI_BASE_URL=https://your-provider.example/v1/chat/completions
 ```
 
-```sh
-node cli.js run my-brief.local.json
-node cli.js run my-brief.local.json path/to/output
-```
+Run your own SearXNG instance with JSON output enabled. PRISM uses it as an open source search adapter. It also has a bounded official website reader that checks `robots.txt` before fetching. Site blocks, empty searches and unavailable models are recorded as research gaps. The workflow limits search queries, results and excerpt size. The model endpoint must support JSON response format.
 
-Set `model` to `b2b`, `b2c`, or `mixed`. The default planner generates direct, procurement, and channel paths for B2B, and individual, institution, and employer payment paths for B2C. To override those paths, add at least three distinct `segments` to an offer. Each segment takes `segment`, `motion`, `user`, and `buyer`. Geography and website default to `unknown`. IDs encode one-based offer, segment, and geography positions. Keep those arrays in order when reusing a claim packet.
+The model passes have distinct roles. A segment generator proposes markets. An analyst drafts source linked claims. A critic searches for disqualifiers and substitutes. A verifier checks excerpts. The controller records stages and only promotes a choice when its supporting quotation occurs in a retained source and the verifier accepts it. This is desk research. The output stays provisional until a person reviews the evidence and a real customer outcome is observed. The current verifier uses the same configured provider for separate calls, so it does not establish organizational independence.
 
-## Evidence and review workflow
+## Dashboard
 
-1. Run the brief and inspect the cards and their support and challenge queries in `report.json`.
-2. Collect permitted sources outside PRISM. Add only short, role- or company-level excerpts to `sources`. Use the same `origin` for material derived from the same underlying document or announcement.
-3. Add claim records for the relevant card. The analyst writes the claim and selects the exact excerpt. A second reviewer checks source identity, context, and whether the excerpt supports the claim.
-4. Ask a separate critic to search for a concrete falsifier. Record that search and the resulting disposition in `reviews`. Record counterevidence as `challenge` and confirmed hard failures as `exclusion`.
-5. Rerun and inspect the evidence ledger, open questions, and field tests.
+- **Overview** shows current research, shortlisted choices, alternatives and live activity.
+- **Research runs** lists every locally saved run.
+- **Evidence ledger** links retained source references and excerpts.
+- **Business brief** shows the declared starting information and offers JSON export.
+- **Full portfolio** includes the top choices, other hypotheses, gaps and rejected paths with reasons. Expand any row to see its evidence and challenge.
 
-This synthetic fragment illustrates the optional fields. One claim by itself cannot clear the recommendation gate.
+Runs are stored as JSON files under `data/<run-id>/run.json`. The write uses a temporary file and rename. The API exposes `GET /api/runs`, `POST /api/runs`, `GET /api/runs/:id` and `GET /api/runs/:id/export`. This local app has no authentication or tenant isolation. Keep it on a trusted local machine.
 
-```json
-{
-  "policy": {
-    "hosts": ["example.org"],
-    "maxSources": 40,
-    "maxAgeDays": 180,
-    "maxRecommendations": 3
-  },
-  "sources": [
-    {
-      "url": "https://example.org/synthetic-survey",
-      "permission": "approved",
-      "origin": "synthetic-survey-2026",
-      "publisher": "Example Institute",
-      "kind": "primary",
-      "observed": "2026-10-15",
-      "text": "Five respondents reported recurring spreadsheet errors."
-    }
-  ],
-  "claims": [
-    {
-      "candidate": "1-1-1",
-      "angle": "pain",
-      "direction": "support",
-      "url": "https://example.org/synthetic-survey",
-      "quote": "Five respondents reported recurring spreadsheet errors.",
-      "statement": "The surveyed group reported recurring spreadsheet errors.",
-      "analyst": "analyst-a",
-      "reviewer": "reviewer-b",
-      "verdict": "confirmed"
-    }
-  ],
-  "reviews": [
-    {
-      "candidate": "1-1-1",
-      "critic": "critic-c",
-      "challenge": "Check whether spreadsheet templates already resolve these errors.",
-      "disposition": "unresolved"
-    }
-  ]
-}
-```
+## Code
 
-Source intake defaults to an empty hostname allowlist. It accepts exact HTTPS hosts and requires an approval attestation, an origin, an identified publisher, an excerpt, and a valid observation date. Invalid entries are logged and skipped. Old excerpts remain in the ledger with a stale flag. The CLI checks quotation and reviewer consistency against retained evidence. Review identities and source permissions are operator attestations in this local trust model.
-
-## Decisions and exports
-
-| Output | Contents |
+| Path | Purpose |
 | --- | --- |
-| `report.md` | Readable cards, reviewed excerpts and citations, challenges, exclusions, and field experiments |
-| `report.json` | Query plan, per-angle coverage, source ledger, audit events, score intervals and linked claim IDs |
+| `app/dashboard.jsx`, `app/globals.css` | Dashboard interface |
+| `app/api/runs/` | Run, status and export endpoints |
+| `lib/research.js` | Bounded collection and research orchestration |
+| `lib/store.js` | Local run persistence |
+| `planner.js`, `evidence.js`, `engine.js` | Original deterministic planning and scoring core |
+| `foxfoster.json` | Example six offer brief |
+| `Autonomous_ICP_Discovery_PRD_v1.md` | Full product requirements |
 
-The eight weighted dimensions follow the PRD. Evidence gaps widen the interval. Grade A requires independent corroboration of a material claim. Grade B requires reviewed primary evidence. The default shortlist admits up to three cards with grade A or B, a lower score bound of at least 75, and a cleared independent critic review. An unresolved challenge blocks the shortlist. A verified exclusion rejects the card. Commercial status stays `not_tested` and buying intent stays `not_observed`. Market size remains `unknown`.
+## Limits and next development
 
-A fixed brief, date and snapshot set reproduce the same run. The run directory uses a SHA-256 digest of the parsed input. Editing the brief or adding evidence generates another directory. Keep brief files and reports on access-controlled storage. The exports include the supplied excerpts.
-
-## Code map and scope
-
-| Module | Responsibility |
-| --- | --- |
-| `planner.js` | Offer tracks, buying motions, research taxonomy and queries |
-| `evidence.js` | Snapshot policy, provenance, duplicate tracking and verification |
-| `engine.js` | Coverage, evidence grades, scoring, decision gates and experiments |
-| `report.js`, `cli.js` | Report rendering and command-line entry point |
-| `engine.test.js` | Determinism, policy, provenance and decision regressions |
-
-The shipped workflow covers the local decision core. PRD work still open includes live search and permitted crawling, semantic extraction, organization entity resolution, a review cockpit and API, account/CRM handoff, run lifecycle controls, outcome ingestion, commercial approval, and governed learning. The pilot fixture tests decomposition and safe abstention. It contains no real market-validation results.
+The dashboard is a usable local research workspace. It has one official page adapter and SearXNG search. The PRD's multi crawler collection, source license registry, entity resolution, expert human approval, outcome feedback, and commercial validation workflow remain to be built. Search result snippets are discovery pointers and should be checked at original sources before making a decision. No field outcome is inferred from public pages. Vercel deployment would need a persistent database and background job service because `data/` and in process runs are local development choices.
