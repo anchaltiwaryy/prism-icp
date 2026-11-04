@@ -26,7 +26,7 @@ npx playwright install chromium
 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000). `npm run build && npm start` starts a production build locally. `npm test` runs the deterministic decision engine tests. `npm run demo` runs the original JSON fixture through the CLI.
+Open [localhost:3000](http://localhost:3000). `npm run build && npm start` starts a production build locally. `npm test` runs the deterministic decision engine tests. `npm run demo` runs the original JSON fixture through the CLI. `npm run pilot` starts the live FoxFoster research run from the command line.
 
 The dashboard can collect public pages without credentials. An optional model and SearXNG increase research breadth and enable automated analysis. Create `.env.local` for local configuration.
 
@@ -112,4 +112,5 @@ This implementation provides live public web collection and a visible research l
 ## Development and safety
 
 `npm test` checks the deterministic evidence gates. `npm run build` checks the Next.js app. `data/`, `.env.local`, and `.next/` are ignored. Do not commit API keys, customer data, or generated run records. Use the source URLs and activity log to audit a result. Respect each source's terms and robots policy when adding adapters. The code is available under the MIT License.
+
 

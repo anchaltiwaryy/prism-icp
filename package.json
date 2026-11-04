@@ -11,7 +11,8 @@
     "build": "next build",
     "start": "next start",
     "test": "node --test",
-    "demo": "node cli.js run foxfoster.json"
+    "demo": "node cli.js run foxfoster.json",
+    "pilot": "node run-pilot.mjs"
   },
   "dependencies": {
     "cheerio": "^1.2.0",
