@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 640" width="1120" height="640" role="img" aria-labelledby="title desc">
+  <title id="title">How PRISM works</title>
+  <desc id="desc">A research engine turns a one-line business brief into evidence-checked customer groups. A go-to-market loop, with people approving every key decision, tests the winners with real buyers, finds matching companies, drafts outreach that is never sent automatically, and learns from the results.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#7a5cb0"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2f8a5f"/>
+    </marker>
+    <marker id="arrowAmber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b07a1f"/>
+    </marker>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <style>
+      text { font-family: "Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif; }
+      .h1 { font-size: 23px; font-weight: 700; fill: #2d2338; }
+      .sub { font-size: 13.5px; fill: #6b6072; }
+      .section { font-size: 11.5px; font-weight: 700; letter-spacing: 1.4px; }
+      .t { font-size: 14px; font-weight: 700; fill: #2d2338; }
+      .d { font-size: 11.6px; fill: #5f5566; }
+      .n { font-size: 12px; font-weight: 700; fill: #ffffff; }
+      .chip { font-size: 11.5px; font-weight: 600; fill: #3d4f45; }
+      .badge { font-size: 9.5px; font-weight: 700; letter-spacing: .6px; fill: #2f6f4f; }
+      .loop { font-size: 11px; font-weight: 600; fill: #8a6a20; }
+      .flow { fill: none; stroke-width: 2; stroke-dasharray: 6 5; animation: dash 1.1s linear infinite; }
+      .flowSlow { fill: none; stroke-width: 2; stroke-dasharray: 3 6; animation: dash 1.8s linear infinite; }
+      @keyframes dash { from { stroke-dashoffset: 22; } to { stroke-dashoffset: 0; } }
+      .pulse { animation: pulse 2.4s ease-in-out infinite; }
+      @keyframes pulse { 0%, 100% { stroke-opacity: .25; } 50% { stroke-opacity: .9; } }
+      @media (prefers-reduced-motion: reduce) { .flow, .flowSlow, .pulse { animation: none; } }
+    </style>
+  </defs>
+
+  <!-- card background -->
+  <rect x="1" y="1" width="1118" height="638" rx="20" fill="#fbf8fc" stroke="#e7dcec" stroke-width="2"/>
+
+  <text x="40" y="50" class="h1">How PRISM works</text>
+  <text x="40" y="76" class="sub">One short brief in. Evidence-checked customer groups out. Then a loop that tests them with real buyers and gets smarter.</text>
+
+  <!-- ===================== 1. RESEARCH ENGINE ===================== -->
+  <text x="40" y="112" class="section" fill="#6d4aa8">1 · RESEARCH ENGINE — RUNS ON ITS OWN, INSIDE A BUDGET YOU SET</text>
+
+  <!-- arrows row 1 (drawn first so boxes sit on top) -->
+  <g stroke="#7a5cb0">
+    <path class="flow" d="M166,200 H182" marker-end="url(#arrow)"/>
+    <path class="flow" d="M320,200 H336" marker-end="url(#arrow)"/>
+    <path class="flow" d="M474,200 H490" marker-end="url(#arrow)"/>
+    <path class="flow" d="M628,200 H644" marker-end="url(#arrow)"/>
+    <path class="flow" d="M782,200 H798" marker-end="url(#arrow)"/>
+    <path class="flow" d="M936,200 H952" marker-end="url(#arrow)"/>
+  </g>
+
+  <g>
+    <!-- box template: x, y=140, w=136, h=118 -->
+    <rect x="30" y="140" width="136" height="118" rx="14" fill="#f3ecfa" stroke="#cbb6e4" stroke-width="1.5"/>
+    <circle cx="54" cy="166" r="12" fill="#6d4aa8"/><text x="54" y="170" class="n" text-anchor="middle">1</text>
+    <text x="44" y="204" class="t">Your brief</text>
+    <text x="44" y="224" class="d">What you sell and</text>
+    <text x="44" y="240" class="d">the problem it solves</text>
+
+    <rect x="184" y="140" width="136" height="118" rx="14" fill="#ffffff" stroke="#d6c6e8" stroke-width="1.5"/>
+    <circle cx="208" cy="166" r="12" fill="#6d4aa8"/><text x="208" y="170" class="n" text-anchor="middle">2</text>
+    <text x="198" y="204" class="t">Understand</text>
+    <text x="198" y="224" class="d">Reads your website,</text>
+    <text x="198" y="240" class="d">facts vs. guesses</text>
+
+    <rect x="338" y="140" width="136" height="118" rx="14" fill="#ffffff" stroke="#d6c6e8" stroke-width="1.5"/>
+    <circle cx="362" cy="166" r="12" fill="#6d4aa8"/><text x="362" y="170" class="n" text-anchor="middle">3</text>
+    <text x="352" y="204" class="t">Explore</text>
+    <text x="352" y="224" class="d">Maps every possible</text>
+    <text x="352" y="240" class="d">customer group</text>
+
+    <rect x="492" y="140" width="136" height="118" rx="14" fill="#ffffff" stroke="#d6c6e8" stroke-width="1.5"/>
+    <circle cx="516" cy="166" r="12" fill="#6d4aa8"/><text x="516" y="170" class="n" text-anchor="middle">4</text>
+    <text x="506" y="204" class="t">Gather evidence</text>
+    <text x="506" y="224" class="d">Public pages, for</text>
+    <text x="506" y="240" class="d">and against each</text>
+
+    <rect x="646" y="140" width="136" height="118" rx="14" fill="#ffffff" stroke="#d6c6e8" stroke-width="1.5"/>
+    <circle cx="670" cy="166" r="12" fill="#6d4aa8"/><text x="670" y="170" class="n" text-anchor="middle">5</text>
+    <text x="660" y="204" class="t">Challenge</text>
+    <text x="660" y="224" class="d">A skeptic tries to</text>
+    <text x="660" y="240" class="d">prove each one wrong</text>
+
+    <rect x="800" y="140" width="136" height="118" rx="14" fill="#ffffff" stroke="#d6c6e8" stroke-width="1.5"/>
+    <circle cx="824" cy="166" r="12" fill="#6d4aa8"/><text x="824" y="170" class="n" text-anchor="middle">6</text>
+    <text x="814" y="204" class="t">Verify &amp; score</text>
+    <text x="814" y="224" class="d">Independent check,</text>
+    <text x="814" y="240" class="d">score ranges, A–U</text>
+
+    <rect x="954" y="140" width="136" height="118" rx="14" fill="#efe6fa" stroke="#7a5cb0" stroke-width="2"/>
+    <rect x="950" y="136" width="144" height="126" rx="17" fill="none" stroke="#7a5cb0" stroke-width="2" class="pulse"/>
+    <circle cx="978" cy="166" r="12" fill="#6d4aa8"/><text x="978" y="170" class="n" text-anchor="middle">7</text>
+    <text x="968" y="204" class="t">Decide</text>
+    <text x="968" y="224" class="d">Top picks, or</text>
+    <text x="968" y="240" class="d">"not yet proven"</text>
+  </g>
+
+  <!-- connector: Decide -> You review -->
+  <path class="flow" d="M1022,262 V320" stroke="#2f8a5f" marker-end="url(#arrowGreen)"/>
+
+  <!-- ===================== 2. GTM LOOP ===================== -->
+  <text x="40" y="300" class="section" fill="#2f8a5f">2 · GO-TO-MARKET LOOP — PEOPLE APPROVE EVERY DECISION THAT MATTERS</text>
+
+  <g stroke="#2f8a5f">
+    <path class="flow" d="M914,382 H882" marker-end="url(#arrowGreen)"/>
+    <path class="flow" d="M704,382 H672" marker-end="url(#arrowGreen)"/>
+    <path class="flow" d="M494,382 H462" marker-end="url(#arrowGreen)"/>
+    <path class="flow" d="M284,382 H252" marker-end="url(#arrowGreen)"/>
+  </g>
+
+  <g>
+    <rect x="914" y="324" width="176" height="116" rx="14" fill="#ffffff" stroke="#bfdccd" stroke-width="1.5"/>
+    <text x="930" y="354" class="t">You review</text>
+    <text x="930" y="374" class="d">Accept, reject or edit</text>
+    <text x="930" y="390" class="d">each recommended group</text>
+    <rect x="930" y="406" width="92" height="20" rx="10" fill="#e5f3ec"/><text x="976" y="420" class="badge" text-anchor="middle">YOU DECIDE</text>
+
+    <rect x="704" y="324" width="176" height="116" rx="14" fill="#ffffff" stroke="#bfdccd" stroke-width="1.5"/>
+    <text x="720" y="354" class="t">Test with real buyers</text>
+    <text x="720" y="374" class="d">Interviews with pass and</text>
+    <text x="720" y="390" class="d">fail rules set in advance</text>
+    <rect x="720" y="406" width="100" height="20" rx="10" fill="#e5f3ec"/><text x="770" y="420" class="badge" text-anchor="middle">YOU SIGN OFF</text>
+
+    <rect x="494" y="324" width="176" height="116" rx="14" fill="#ffffff" stroke="#bfdccd" stroke-width="1.5"/>
+    <text x="510" y="354" class="t">Find matching companies</text>
+    <text x="510" y="374" class="d">Checks each company's</text>
+    <text x="510" y="390" class="d">own site against the profile</text>
+    <rect x="510" y="406" width="100" height="20" rx="10" fill="#e5f3ec"/><text x="560" y="420" class="badge" text-anchor="middle">YOU APPROVE</text>
+
+    <rect x="284" y="324" width="176" height="116" rx="14" fill="#ffffff" stroke="#bfdccd" stroke-width="1.5"/>
+    <text x="300" y="354" class="t">Draft outreach</text>
+    <text x="300" y="374" class="d">Every sentence is sourced</text>
+    <text x="300" y="390" class="d">and quality-checked</text>
+    <rect x="300" y="406" width="112" height="20" rx="10" fill="#f1ecf8"/><text x="356" y="420" class="badge" text-anchor="middle" style="fill:#5d468a">AUTO QA CHECK</text>
+
+    <rect x="74" y="324" width="176" height="116" rx="14" fill="#ffffff" stroke="#bfdccd" stroke-width="1.5"/>
+    <text x="90" y="354" class="t">Drafts folder</text>
+    <text x="90" y="374" class="d">Saved for you to send</text>
+    <text x="90" y="390" class="d">yourself, if you choose</text>
+    <rect x="90" y="406" width="124" height="20" rx="10" fill="#fdecea"/><text x="152" y="420" class="badge" text-anchor="middle" style="fill:#a2402f">NEVER AUTO-SENT</text>
+  </g>
+
+  <!-- ===================== 3. LEARN ===================== -->
+  <path class="flow" d="M792,440 V478" stroke="#b07a1f" marker-end="url(#arrowAmber)"/>
+  <path class="flow" d="M1002,440 V478" stroke="#b07a1f" marker-end="url(#arrowAmber)"/>
+  <path class="flow" d="M162,440 V478" stroke="#b07a1f" marker-end="url(#arrowAmber)"/>
+
+  <rect x="74" y="482" width="1016" height="62" rx="14" fill="#fdf6e7" stroke="#ead6a6" stroke-width="1.5"/>
+  <text x="96" y="508" class="section" fill="#9a6a12">3 · LEARN</text>
+  <text x="190" y="508" class="d" style="fill:#5c4a28">Interview results, reviews and outcomes show which picks were right and which sources were reliable.</text>
+  <text x="190" y="528" class="d" style="fill:#5c4a28">PRISM suggests improvements, tests them against past results, and only a person can switch them on.</text>
+
+  <!-- feedback loop: Learn -> back into the research engine -->
+  <path class="flowSlow" d="M74,513 H24 V124 H406 V136" stroke="#b07a1f" marker-end="url(#arrowAmber)"/>
+  <text x="13" y="330" class="loop" font-size="10.5" transform="rotate(-90 13 330)" text-anchor="middle">every run makes the next one smarter</text>
+
+  <!-- ===================== GUARDRAILS ===================== -->
+  <text x="40" y="584" class="section" fill="#3d4f45">ALWAYS ON</text>
+  <g>
+    <rect x="128" y="568" width="132" height="26" rx="13" fill="#eef6f1" stroke="#cfe5d8"/><text x="194" y="585" class="chip" text-anchor="middle">Public pages only</text>
+    <rect x="270" y="568" width="196" height="26" rx="13" fill="#eef6f1" stroke="#cfe5d8"/><text x="368" y="585" class="chip" text-anchor="middle">An exact quote for every claim</text>
+    <rect x="476" y="568" width="178" height="26" rx="13" fill="#eef6f1" stroke="#cfe5d8"/><text x="565" y="585" class="chip" text-anchor="middle">No personal contact data</text>
+    <rect x="664" y="568" width="186" height="26" rx="13" fill="#eef6f1" stroke="#cfe5d8"/><text x="757" y="585" class="chip" text-anchor="middle">Nothing sent automatically</text>
+    <rect x="860" y="568" width="230" height="26" rx="13" fill="#eef6f1" stroke="#cfe5d8"/><text x="975" y="585" class="chip" text-anchor="middle">Allowed to say "not yet proven"</text>
+  </g>
+
+  <!-- travelling signal: follows the whole journey -->
+  <circle r="6" fill="#ff8a3d" filter="url(#glow)" opacity="0.95">
+    <animateMotion dur="16s" repeatCount="indefinite" rotate="0"
+      path="M98,200 H1022 V382 H162 V513 H24 V124 H406 V200 H1022"/>
+  </circle>
+</svg>

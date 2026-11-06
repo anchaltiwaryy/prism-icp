@@ -1,0 +1,11 @@
+{
+  "name": "Acme Helpdesk",
+  "offer": "Shared inbox for customer support",
+  "problem": "Small support teams lose track of customer emails spread across personal inboxes",
+  "website": "",
+  "geography": "United States",
+  "model": "b2b",
+  "mode": "quick",
+  "topCount": 3,
+  "excludedMarkets": ["government"]
+}
