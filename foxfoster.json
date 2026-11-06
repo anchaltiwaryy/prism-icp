@@ -1,8 +1,15 @@
 {
+  "id": "foxfoster",
   "name": "FoxFoster",
   "website": "https://foxfoster.com/",
   "model": "mixed",
   "asOf": "2026-11-04",
+  "mode": "discovery",
+  "referenceUrls": [
+    "https://www.nist.gov/itl/applied-cybersecurity/nice/nice-framework-resource-center/getting-started",
+    "https://owasp.org/www-project-web-security-testing-guide/",
+    "https://ctftime.org/"
+  ],
   "offers": [
     {
       "name": "Xnolex",
