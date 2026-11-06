@@ -1,27 +1,257 @@
 'use client';
-import {useEffect,useState} from 'react';
-import {Activity,ArrowDownToLine,ArrowRight,BookOpen,CheckCircle2,ChevronRight,ClipboardList,Compass,FileSearch,LayoutDashboard,Plus,Search,ShieldCheck,Sparkles,XCircle} from 'lucide-react';
-const icons={overview:LayoutDashboard,runs:Activity,evidence:FileSearch,brief:ClipboardList};
-const date=value=>new Date(value).toLocaleString(undefined,{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-export default function Dashboard(){
- const [runs,setRuns]=useState([]),[active,setActive]=useState(null),[view,setView]=useState('overview'),[modal,setModal]=useState(false),[busy,setBusy]=useState(false),[error,setError]=useState(''),[topCount,setTopCount]=useState(3),[filter,setFilter]=useState('all'),[showAll,setShowAll]=useState(false);
- const [form,setForm]=useState({name:'',offer:'',problem:'',website:'',geography:'',model:'b2b'});
- async function refresh(){try{const result=await fetch('/api/runs',{cache:'no-store'});const list=await result.json();setRuns(list);if(active){const found=list.find(item=>item.id===active.id);if(found)setActive(found);}}catch{}}
- useEffect(()=>{refresh();const timer=setInterval(refresh,2500);return()=>clearInterval(timer)},[active?.id]);
- const selected=active??runs[0]??null;
- const cards=(selected?.cards??[]).filter(card=>filter==='all'||card.status===filter);
- async function submit(event){event.preventDefault();setBusy(true);setError('');try{const response=await fetch('/api/runs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...form,topCount})});const body=await response.json();if(!response.ok)throw Error(body.error);setModal(false);setView('overview');setActive(null);await refresh();}catch(cause){setError(cause.message)}finally{setBusy(false)}}
- function nav(key,label){const Icon=icons[key];return <button className={'nav-item '+(view===key?'selected':'')} onClick={()=>setView(key)}><Icon size={17}/><span>{label}</span></button>}
- return <div className="shell"><aside className="sidebar"><div className="brand"><div className="brand-icon"><Sparkles size={18}/></div><div><strong>PRISM</strong><small>Find your best customers</small></div></div><div className="side-caption">WORKSPACE</div><nav>{nav('overview','Overview')}{nav('runs','Past research')}{nav('evidence','Sources')}{nav('brief','Your business')}</nav><div className="sidebar-bottom"><div className="side-note"><ShieldCheck size={18}/><div><strong>Checked sources</strong><span>See where each finding came from.</span></div></div><div className="avatar"><div>PR</div><span>Local workspace<small>Private on this computer</small></span></div></div></aside>
- <main className="main"><header className="topbar"><div className="crumb">Workspace <ChevronRight size={14}/> <strong>{view==='overview'?'Overview':view==='runs'?'Research runs':view==='evidence'?'Evidence ledger':'Business brief'}</strong></div><div className="top-actions"><span className="local-pill"><span/> LOCAL MODE</span><button className="primary small" onClick={()=>setModal(true)}><Plus size={16}/> New research</button></div></header>
- <div className="content"><div className="page-heading"><div><div className="eyebrow">CUSTOMER RESEARCH</div><h1>{view==='overview'?'Your customer research':view==='runs'?'Research runs':view==='evidence'?'Evidence ledger':'Business brief'}</h1><p>{view==='overview'?'See who may buy, what the evidence says, and what to do next.':view==='runs'?'A clear record of every research run and its decisions.':view==='evidence'?'Trace each source behind your market research.':'The starting point for your selected research run.'}</p></div><div className="heading-actions"><button className="secondary" onClick={async()=>{setBusy(true);try{await fetch('/api/runs',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({pilot:'foxfoster',topCount})});await refresh()}finally{setBusy(false)}}} disabled={busy}><Search size={16}/> Research FoxFoster</button><button className="secondary" onClick={()=>setModal(true)}><Plus size={16}/> Start a run</button></div></div>
- {view==='overview'&&<><section className="metrics"><Metric icon={Activity} label="Research runs" value={runs.length} detail="Saved locally" color="purple"/><Metric icon={Compass} label="Customer groups found" value={runs.reduce((n,r)=>n+(r.cards?.length??0),0)} detail="Across all runs" color="blue"/><Metric icon={ShieldCheck} label="Best choices" value={runs.reduce((n,r)=>n+(r.recommendations?.length??0),0)} detail="Still need field tests" color="green"/><Metric icon={XCircle} label="Rejected groups" value={runs.reduce((n,r)=>n+(r.cards?.filter(c=>c.status==='rejected').length??0),0)} detail="With recorded reasons" color="orange"/></section><div className="grid"><section className="panel main-panel"><div className="panel-top"><div><div className="eyebrow">LATEST RESEARCH</div><h2>{selected?.brief.name??'A clearer way to find your ICP'}</h2><p>{selected?selected.brief.offer+' · '+selected.brief.geography:'Start with your business and one offer. PRISM will map markets, collect evidence, and challenge the strongest candidates.'}</p></div>{selected&&<span className={'status '+selected.status}>{selected.status}</span>}</div>{selected?<><div className="run-progress"><div><span>Research activity</span><strong>{selected.activity?.length??0} steps</strong></div><div className="track"><span style={{width:selected.status==='complete'?'100%':selected.status==='failed'?'100%':'54%'}}/></div></div><div className="section-heading"><h3>What we found</h3><span className="muted">{selected.sources?.length??0} pages</span></div><div className="mini-list">{selected.sources?.filter((source,index,all)=>all.findIndex(item=>item.origin===source.origin)===index).slice(0,3).map((source,index)=><div className="mini-row" key={index}><div><a href={source.url} target="_blank" rel="noreferrer"><strong>{source.title}</strong></a><span>{source.origin}</span></div><span className="tag">Source ↗</span></div>)}{!selected.sources?.length&&<p className="muted">No public pages collected yet.</p>}</div><div className="section-heading"><h3>Best choices</h3><button className="link-button" onClick={()=>document.querySelector('.portfolio')?.scrollIntoView({behavior:'smooth'})}>See all <ArrowRight size={14}/></button></div>{selected.recommendations?.length?<div className="choice-list">{selected.recommendations.map((id,index)=>{const c=selected.cards.find(card=>card.id===id);return c&&<Card key={id} card={c} rank={index+1}/>})}</div>:<div className="empty-inline"><FileSearch size={20}/><div><strong>No choice is backed by enough evidence yet</strong><span>{selected.status==='running'?'Research is still in progress.':'See the groups we found and what still needs checking below.'}</span></div></div>}<div className="other-header"><h3>Other groups we found</h3><span>{selected.cards?.length??0} total</span></div><div className="mini-list">{selected.cards?.filter(c=>!selected.recommendations.includes(c.id)).slice(0,5).map(c=><div className="mini-row" key={c.id}><div><strong>{c.segment}</strong><span>{c.status==='rejected'?c.rejectionReason:c.gaps?.[0]??'Needs independent evidence'}</span></div><span className={'tag '+c.status}>{c.status.replace('_',' ')}</span></div>)}{!selected.cards?.length&&<p className="muted">Market mapping is underway.</p>}</div></>:<button className="empty-cta" onClick={()=>setModal(true)}><Plus size={18}/> Start your first research run <ArrowRight size={16}/></button>}</section><aside className="right-stack"><section className="panel activity-panel"><div className="section-heading"><h3>Activity</h3><span className="tiny-count">LIVE LOG</span></div>{selected?.activity?.slice().reverse().slice(0,7).map((event,index)=><div className="activity-row" key={index}><div className="activity-dot"/><div><strong>{event.stage}</strong><p>{event.detail}</p><small>{date(event.at)}</small></div></div>)}{!selected&&<p className="muted">Activity appears here when a run starts.</p>}</section><section className="panel note-panel"><div className="note-icon"><BookOpen size={20}/></div><h3>What a result means</h3><p>Research can show a promising market. Customer interviews and outcomes are needed to validate that people will buy.</p></section></aside></div></>}
- {view==='runs'&&<div className="panel wide-panel"><div className="section-heading"><h3>Saved runs</h3><span className="muted">{runs.length} total</span></div>{runs.length?runs.map(run=><button className={'run-row '+(selected?.id===run.id?'active':'')} key={run.id} onClick={()=>{setActive(run);setView('overview')}}><div className="run-symbol"><Compass size={19}/></div><div><strong>{run.brief.name}</strong><span>{run.brief.offer} · {run.brief.geography}</span></div><div className="run-right"><span className={'status '+run.status}>{run.status}</span><small>{date(run.createdAt)}</small><ChevronRight size={17}/></div></button>):<div className="empty-inline">No research runs yet.</div>}</div>}
- {view==='evidence'&&<div className="panel wide-panel"><div className="section-heading"><h3>Sources in this run</h3><span className="muted">{selected?.sources?.length??0} references</span></div>{selected?.sources?.length?selected.sources.map((source,index)=><div className="source-row" key={index}><div className="source-icon"><FileSearch size={18}/></div><div><a href={source.url} target="_blank" rel="noreferrer">{source.title||source.url}</a><p>{source.excerpt?.slice(0,210)}…</p><small>{source.origin} · {source.kind} · {date(source.observed)}</small></div></div>):<div className="empty-inline">No permitted sources were collected. Add a reachable website or configure SearXNG.</div>}</div>}
- {view==='brief'&&<div className="panel wide-panel"><div className="section-heading"><h3>{selected?.brief.name??'No brief yet'}</h3>{selected&&<a className="link-button" href={'/api/runs/'+selected.id+'/export'}><ArrowDownToLine size={15}/> Export JSON</a>}</div>{selected?<div className="brief-grid">{Object.entries(selected.brief).map(([key,value])=><div key={key}><small>{key.replace(/([A-Z])/g,' $1')}</small><strong>{String(value)}</strong></div>)}</div>:<div className="empty-inline">Start a research run to see its brief.</div>}</div>}
- {selected?.cards?.length>0&&view==='overview'&&<section className="panel portfolio"><div className="portfolio-head"><div><div className="eyebrow">ALL FINDINGS</div><h2>Every customer group, with a reason</h2><p>See the other options and why some were rejected.</p></div><a className="secondary" href={'/api/runs/'+selected.id+'/export'}><ArrowDownToLine size={16}/> Export</a></div><div className="filters">{[['all','All'],['researched','Researched'],['unverified','Needs evidence'],['rejected','Rejected']].map(([key,label])=><button key={key} className={filter===key?'active':''} onClick={()=>setFilter(key)}>{label}</button>)}</div><div className="portfolio-list">{(showAll?cards:cards.slice(0,6)).map(card=><details key={card.id} className="detail-card"><summary><div className="rank">{String(card.id).padStart(2,'0')}</div><div className="detail-title"><strong>{card.offer&&<small>{card.offer} · </small>}{card.segment}</strong><span>{card.motion} · Buyer: {card.buyer}</span></div><span className={'tag '+card.status}>{card.status.replace('_',' ')}</span><ChevronRight size={18}/></summary><div className="detail-body"><p>{card.why}</p><p><strong>Next step:</strong> {card.nextStep}</p><div className="detail-columns"><div><h4>Evidence</h4>{card.evidence.length?card.evidence.map((item,i)=><p key={i}>{item.claim} <a href={item.sourceUrl} target="_blank" rel="noreferrer">Source ↗</a></p>):<p>No checked evidence yet.</p>}</div><div><h4>What could make this a poor fit</h4><p>{card.challenge}</p>{card.gaps.map((gap,i)=><p key={i}>• {gap}</p>)}{card.rejectionReason&&<p><strong>Rejected because:</strong> {card.rejectionReason}</p>}</div></div></div></details>)}</div>{cards.length>6&&<button className="more-button" onClick={()=>setShowAll(!showAll)}>{showAll?'Show fewer':'Show all '+cards.length+' groups'}</button>}</section>}
- </div></main>{modal&&<div className="modal-backdrop" onMouseDown={e=>{if(e.target===e.currentTarget)setModal(false)}}><form className="modal" onSubmit={submit}><button className="close" type="button" onClick={()=>setModal(false)}>×</button><div className="eyebrow">NEW RESEARCH</div><h2>Tell us what you sell</h2><p>Start small. Missing facts stay visible as research gaps.</p><label>Business name<input required maxLength="160" value={form.name} onChange={e=>setForm({...form,name:e.target.value})} placeholder="e.g. FoxFoster"/></label><label>Offer<input required maxLength="160" value={form.offer} onChange={e=>setForm({...form,offer:e.target.value})} placeholder="e.g. Corporate training"/></label><label>Problem you solve<textarea required maxLength="500" value={form.problem} onChange={e=>setForm({...form,problem:e.target.value})} placeholder="What outcome does this offer help deliver?"/></label><div className="form-grid"><label>Website <span>(optional)</span><input type="url" value={form.website} onChange={e=>setForm({...form,website:e.target.value})} placeholder="https://example.com"/></label><label>Geography<input value={form.geography} onChange={e=>setForm({...form,geography:e.target.value})} placeholder="Global"/></label></div><div className="form-grid"><label>Market<select value={form.model} onChange={e=>setForm({...form,model:e.target.value})}><option value="b2b">B2B</option><option value="b2c">B2C</option><option value="mixed">Mixed</option></select></label><label>Show me<select value={topCount} onChange={e=>setTopCount(Number(e.target.value))}><option value={3}>Top 3 choices</option><option value={5}>Top 5 choices</option></select></label></div>{error&&<p className="error">{error}</p>}<button className="primary submit" disabled={busy}>{busy?'Starting…':'Start research'} <ArrowRight size={16}/></button></form></div>}</div>
-}
-function Metric({icon:Icon,label,value,detail,color}){return <div className="metric"><div className={'metric-icon '+color}><Icon size={19}/></div><span>{label}</span><strong>{value}</strong><small>{detail}</small></div>}
-function Card({card,rank}){return <div className="choice"><span className="choice-rank">0{rank}</span><div><strong>{card.segment}</strong><p>{card.why}</p><small>{card.evidence.length} checked claims · {card.gaps.length} gaps</small></div><span className="score">{card.score??'—'}</span></div>}
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  Activity, Briefcase, Building2, FileSearch, FlaskConical, GraduationCap, History, LayoutDashboard, Plus, ShieldAlert, Sparkles, Target,
+} from 'lucide-react';
+import { api, Badge, humanize, PrismContext } from './components/ui';
+import Cockpit from './components/Cockpit';
+import Icps from './components/Icps';
+import Evidence from './components/Evidence';
+import RedTeam from './components/RedTeam';
+import Validation from './components/Validation';
+import Accounts from './components/Accounts';
+import Learning from './components/Learning';
+import Runs from './components/Runs';
+import Business from './components/Business';
+import NewRunModal from './components/NewRunModal';
 
+const VIEWS = [
+  {key: 'cockpit', label: 'Cockpit', icon: LayoutDashboard, title: 'Research cockpit', text: 'Stages, budgets, coverage and the live log for the selected run.'},
+  {key: 'icps', label: 'ICPs', icon: Target, title: 'ICP portfolio', text: 'Every hypothesis with its score range, evidence grade, objections and your review decision.'},
+  {key: 'evidence', label: 'Evidence', icon: FileSearch, title: 'Evidence ledger', text: 'Claims, quotes and sources with provenance, verification verdicts and what was rejected.'},
+  {key: 'redteam', label: 'Red team', icon: ShieldAlert, title: 'Adversarial report', text: 'Fifteen attacks per shortlisted ICP. A fail needs a checkable citation.'},
+  {key: 'validation', label: 'Validation', icon: FlaskConical, title: 'Validation sprint', text: 'Pre-registered field tests. Only real outcomes can validate an ICP commercially.'},
+  {key: 'accounts', label: 'Accounts', icon: Building2, title: 'Accounts & outreach', text: 'Sample organizations for accepted ICPs, human approval, tagged drafts and a dry-run outbox.'},
+  {key: 'learning', label: 'Learning', icon: GraduationCap, title: 'Outcome learning', text: 'Outcomes, calibration, source precision and human-approved strategy changes.'},
+  {key: 'runs', label: 'Runs', icon: History, title: 'Research runs', text: 'History, comparisons and exports.'},
+  {key: 'business', label: 'Business', icon: Briefcase, title: 'Business understanding', text: 'What the owner declared, what the public site shows, and what was inferred.'},
+];
+const ACTIVE = ['running', 'queued'];
+
+function readStorage(key) { try { return window.localStorage.getItem(key) ?? ''; } catch { return ''; } }
+function writeStorage(key, value) { try { window.localStorage.setItem(key, value); } catch { /* storage unavailable */ } }
+
+export default function Dashboard() {
+  const [runs, setRuns] = useState(null);
+  const [selectedId, setSelectedId] = useState('');
+  const [run, setRun] = useState(null);
+  const [workspace, setWorkspace] = useState(null);
+  const [view, setView] = useState('cockpit');
+  const [modal, setModal] = useState(false);
+  const [notice, setNotice] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [reviewer, setReviewer] = useState('');
+  const [askName, setAskName] = useState(null);
+  const [nameDraft, setNameDraft] = useState('');
+  const selectedRef = useRef('');
+
+  useEffect(() => {
+    setReviewer(readStorage('prism.reviewer'));
+    const stored = readStorage('prism.run');
+    if (stored) { setSelectedId(stored); selectedRef.current = stored; }
+  }, []);
+
+  const loadRuns = useCallback(async () => {
+    try {
+      const list = await api('/api/runs');
+      setRuns(list);
+      if (!selectedRef.current && list.length) { selectedRef.current = list[0].id; setSelectedId(list[0].id); }
+      if (selectedRef.current && list.length && !list.some(item => item.id === selectedRef.current)) {
+        selectedRef.current = list[0].id; setSelectedId(list[0].id);
+      }
+    } catch (error) { setRuns(current => current ?? []); }
+  }, []);
+
+  const loadRun = useCallback(async (id = selectedRef.current) => {
+    if (!id) { setRun(null); return; }
+    try { const data = await api('/api/runs/' + id); if (id === selectedRef.current) setRun(data); }
+    catch (error) { if (id === selectedRef.current) setRun(null); }
+  }, []);
+
+  const loadWorkspace = useCallback(async () => {
+    try { setWorkspace(await api('/api/workspace')); } catch { /* keep last value */ }
+  }, []);
+
+  useEffect(() => { loadRuns(); loadWorkspace(); const timer = setInterval(loadRuns, 3000); return () => clearInterval(timer); }, [loadRuns, loadWorkspace]);
+  useEffect(() => { loadRun(selectedId); }, [selectedId, loadRun]);
+  useEffect(() => {
+    if (!ACTIVE.includes(run?.status)) return undefined;
+    const timer = setInterval(() => loadRun(), 2500);
+    return () => clearInterval(timer);
+  }, [run?.status, loadRun]);
+  const jobsRunning = workspace?.jobs?.some(job => job.status === 'running');
+  useEffect(() => {
+    if (!['accounts', 'learning'].includes(view) && !jobsRunning) return undefined;
+    const timer = setInterval(loadWorkspace, 5000);
+    return () => clearInterval(timer);
+  }, [view, jobsRunning, loadWorkspace]);
+
+  const selectRun = useCallback(id => {
+    selectedRef.current = id; setSelectedId(id); writeStorage('prism.run', id);
+  }, []);
+
+  /** Run an API action with busy state, inline errors and a refresh of everything it may have changed. */
+  const act = useCallback(async (fn, success) => {
+    setBusy(true); setNotice(null);
+    try {
+      const result = await fn();
+      if (success) setNotice({kind: 'ok', text: typeof success === 'function' ? success(result) : success});
+      await Promise.all([loadRun(), loadRuns(), loadWorkspace()]);
+      return result;
+    } catch (error) {
+      setNotice({kind: 'error', text: error.message});
+      return null;
+    } finally { setBusy(false); }
+  }, [loadRun, loadRuns, loadWorkspace]);
+
+  /** Every human decision carries a named reviewer (logical sign-off, PRD §22). */
+  const withActor = useCallback(callback => {
+    if (reviewer) return callback('human:' + reviewer);
+    setNameDraft('');
+    setAskName(() => callback);
+    return null;
+  }, [reviewer]);
+
+  function saveName(event) {
+    event.preventDefault();
+    const name = nameDraft.trim().replace(/[^\w .@-]/g, '').slice(0, 60);
+    if (!name) return;
+    setReviewer(name); writeStorage('prism.reviewer', name);
+    const pending = askName; setAskName(null);
+    if (pending) pending('human:' + name);
+  }
+
+  const runAction = useCallback((payload, success) => act(() => api('/api/runs/' + selectedRef.current, payload), success), [act]);
+  const workspaceAction = useCallback((payload, success) => act(() => api('/api/workspace', payload), success), [act]);
+
+  const context = useMemo(() => ({
+    run, runs: runs ?? [], workspace, busy, reviewer, act, withActor, runAction, workspaceAction, selectRun, setView,
+    reasonCodes: workspace?.reasonCodes ?? {}, openNewRun: () => setModal(true), notify: setNotice, refreshWorkspace: loadWorkspace,
+  }), [run, runs, workspace, busy, reviewer, act, withActor, runAction, workspaceAction, selectRun, loadWorkspace]);
+
+  const current = VIEWS.find(item => item.key === view);
+  const counts = {
+    icps: run?.cards?.length, evidence: run?.claims?.length,
+    accounts: workspace?.accounts?.filter(account => account.state === 'HUMAN_REVIEW').length || undefined,
+    validation: run?.experiments?.length, runs: runs?.length,
+  };
+
+  async function startPilot(mode) {
+    const result = await act(() => api('/api/runs', {pilot: 'foxfoster', mode, topCount: 3}), 'FoxFoster pilot started');
+    if (result?.id) { selectRun(result.id); setView('cockpit'); setModal(false); }
+  }
+
+  return (
+    <PrismContext.Provider value={context}>
+      <div className="shell">
+        <aside className="sidebar">
+          <div className="brand">
+            <div className="brand-icon"><Sparkles size={18} /></div>
+            <div><strong>PRISM</strong><small>Evidence-led GTM system</small></div>
+          </div>
+          <button className="btn primary" onClick={() => setModal(true)}><Plus size={15} /> New research</button>
+          <div className="side-caption">WORKSPACE</div>
+          <nav className="nav" aria-label="Views">
+            {VIEWS.map(({key, label, icon: Icon}) => (
+              <button key={key} className={'nav-item ' + (view === key ? 'selected' : '')} onClick={() => setView(key)} aria-current={view === key ? 'page' : undefined}>
+                <Icon size={16} /><span>{label}</span>{counts[key] ? <span className="count">{counts[key]}</span> : null}
+              </button>
+            ))}
+          </nav>
+          <div className="sidebar-bottom">
+            <div className="health" aria-live="polite">
+              <strong>System</strong>
+              <div className="row"><Activity size={13} /> <span>Model: {workspace?.health?.llm ?? 'checking…'}</span></div>
+              <div className="row"><FileSearch size={13} /> <span>Search: {workspace?.health?.search ?? '…'}</span></div>
+              <div className="row"><ShieldAlert size={13} /> <span>Outreach: dry-run only, never sent</span></div>
+            </div>
+            <div className="reviewer-chip">
+              <div className="avatar">{(reviewer || '?').slice(0, 2).toUpperCase()}</div>
+              <span>{reviewer || 'No reviewer set'}<small>Signs human decisions</small></span>
+              <button className="btn link small" onClick={() => { setNameDraft(reviewer); setAskName(() => () => {}); }}>{reviewer ? 'Change' : 'Set'}</button>
+            </div>
+          </div>
+        </aside>
+
+        <main className="main">
+          <header className="topbar">
+            <div className="run-picker">
+              <span className="eyebrow">Run</span>
+              {runs?.length ? (
+                <select value={selectedId} onChange={event => selectRun(event.target.value)} aria-label="Selected research run">
+                  {runs.map(item => (
+                    <option key={item.id} value={item.id}>
+                      {item.name} · {humanize(item.mode)} · {humanize(item.status)} · {new Date(item.createdAt).toLocaleDateString()}
+                    </option>
+                  ))}
+                </select>
+              ) : <span className="muted small">No runs yet</span>}
+              {run && <Badge value={run.status} />}
+            </div>
+            <div className="top-actions">
+              {run && <a className="btn small" href={`/api/runs/${run.id}/export?format=memo`}>Decision memo</a>}
+              <button className="btn small" onClick={() => setModal(true)}><Plus size={14} /> New research</button>
+            </div>
+          </header>
+
+          <div className="content">
+            <div className="page-heading">
+              <div>
+                <div className="eyebrow">{run ? run.brief?.name : 'PRISM'}</div>
+                <h1>{current.title}</h1>
+                <p>{current.text}</p>
+              </div>
+            </div>
+            {notice && (
+              <div className={'notice ' + notice.kind} role={notice.kind === 'error' ? 'alert' : 'status'}>
+                <span>{notice.text}</span>
+                <button className="btn link small" onClick={() => setNotice(null)} aria-label="Dismiss message">Dismiss</button>
+              </div>
+            )}
+            {runs !== null && !runs.length && !['learning', 'accounts'].includes(view) ? (
+              <section className="panel onboarding">
+                <div className="brand-icon" style={{height: 48, width: 48}}><Sparkles size={22} /></div>
+                <h2>Start with what you sell</h2>
+                <p>PRISM maps plausible markets, collects public evidence, challenges every hypothesis with a red team, verifies claims against
+                  their sources and recommends at most a few ICPs to test in the field. It is allowed to recommend none.</p>
+                <div className="btn-row">
+                  <button className="btn primary" onClick={() => setModal(true)}><Plus size={15} /> Start a research run</button>
+                  <button className="btn" onClick={() => startPilot('quick')} disabled={busy}>Research FoxFoster pilot (quick)</button>
+                </div>
+              </section>
+            ) : (
+              <>
+                {view === 'cockpit' && <Cockpit />}
+                {view === 'icps' && <Icps />}
+                {view === 'evidence' && <Evidence />}
+                {view === 'redteam' && <RedTeam />}
+                {view === 'validation' && <Validation />}
+                {view === 'accounts' && <Accounts />}
+                {view === 'learning' && <Learning />}
+                {view === 'runs' && <Runs />}
+                {view === 'business' && <Business />}
+              </>
+            )}
+          </div>
+        </main>
+
+        {modal && <NewRunModal onClose={() => setModal(false)} onPilot={startPilot}
+          onStarted={id => { selectRun(id); setView('cockpit'); setModal(false); }} />}
+
+        {askName !== null && (
+          <div className="modal-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) setAskName(null); }}>
+            <form className="modal" onSubmit={saveName} style={{width: 'min(440px, 100%)'}}>
+              <div className="modal-head">
+                <div><div className="eyebrow">Reviewer</div><h2>Who is signing this decision?</h2></div>
+                <button type="button" className="btn link" onClick={() => setAskName(null)} aria-label="Close">Close</button>
+              </div>
+              <p className="muted small">Human decisions (accepting ICPs, approving accounts, validating outcomes, adopting learning changes) are recorded with your name. It is stored only in this browser.</p>
+              <label className="field">Your name<input autoFocus value={nameDraft} onChange={event => setNameDraft(event.target.value)} placeholder="e.g. Anchal" maxLength={60} /></label>
+              <div className="btn-row"><button className="btn primary" type="submit" disabled={!nameDraft.trim()}>Save and continue</button></div>
+            </form>
+          </div>
+        )}
+      </div>
+    </PrismContext.Provider>
+  );
+}
