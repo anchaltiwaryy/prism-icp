@@ -1,9 +1,21 @@
 # Coding agent guide
 
-This repository implements the local PRISM dashboard and research runner described in README.md and Autonomous_ICP_Discovery_PRD_v1.md.
+PRISM is a local Next.js app plus a staged research controller (`lib/pipeline.js`). Read README.md, then
+docs/PRD_COVERAGE.md, then the PRD for the requirement you are touching.
 
-Start with `npm install`, `npx playwright install chromium`, `npm test`, and `npm run build`. Run `npm run dev` for local UI work. Use `Research FoxFoster` to exercise all six offers. Inspect `data/<run-id>/run.json` for activity, source references and decisions.
+Setup: `npm install`, `npx playwright install chromium`, `npm test`, `npm run build`, `npm run seed`, `npm run dev`.
+Inspect `data/<run-id>/run.json` for stages, events, sources, claims, cards and decisions; `data/workspace/*.json` for
+accounts, outcomes, feedback and learning.
 
-Preserve these invariants. A public page alone cannot establish purchase intent or commercial validation. Every accepted claim needs an exact quote from a retained original page. Search listings are pointers, not evidence. A skeptical challenge and separate verification pass precede the shortlist. Hard exclusions remain visible. Returning zero choices is valid. Never invent counts, TAM, budgets or conversion rates. Do not bypass robots, login, source restrictions or collect personal contact lists.
+Invariants — keep them, and add a test when you touch one:
+- A public page never establishes purchase intent or commercial validation. `buyingIntent` stays `not_observed`.
+- Every admitted claim's quote is literally present in a retained source (`admitClaims`). Search listings are pointers.
+- The skeptic and verifier are separate calls; the verifier never sees the cards. A red-team "fail" needs a checkable citation.
+- Hard exclusions stay visible; missing evidence defers, it never rejects; zero recommendations is valid.
+- Never invent counts, TAM, budgets or conversion rates (`marketSize` is `insufficient_data` unless sourced).
+- Organizations merge only on a shared domain. Buyers are roles; never collect personal contact data.
+- `APPROVED`, review decisions, experiment actions, commercial validation and learning promotions need a `human:` actor.
+- Outreach is dry-run only. Learning may not change policy, privacy, robots or source permissions.
 
-Keep the local app usable without external services. Optional model and search adapters should degrade to explicit gaps. Keep run limits bounded and record skipped sources. Add tests for a specific regression, then run `npm test` and `npm run build`. Update the README when changing setup, API or research gates.
+Keep the app usable without external services: model and search adapters degrade to explicit gaps. Keep budgets
+bounded and log skipped sources. Update README.md and docs/PRD_COVERAGE.md when behaviour changes.
